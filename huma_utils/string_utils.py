@@ -3,6 +3,7 @@ from typing import Any
 
 _PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
 
+
 def snake_to_camel(name: str, overrides: dict[str, str] | None = None) -> str:
     """
     Converts name from snake case to camel case. If name is in overrides, then return
@@ -19,6 +20,7 @@ def snake_to_camel(name: str, overrides: dict[str, str] | None = None) -> str:
     words = [word.title() for word in name.split("_")]
     words[0] = words[0].lower()
     return "".join(words)
+
 
 def camel_to_snake(s: str) -> str:
     """
