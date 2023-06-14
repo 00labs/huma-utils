@@ -1,0 +1,64 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: check-yaml
+        name: 'check-yaml'
+      - id: end-of-file-fixer
+        name: 'end-of-file-fixer'
+      - id: trailing-whitespace
+        name: 'trailing-whitespace'
+      - id: no-commit-to-branch
+        name: 'no-commit-to-branch - (main, develop)'
+        args: [--branch, main, --branch, develop]
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.0.2
+    hooks:
+      - id: autoflake
+        name: 'autoflake'
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        name: 'black'
+        types: [python]
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.11.5
+    hooks:
+      - id: isort
+        name: 'isort'
+        types: [python]
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        name: 'flake8'
+        # Certain checks disabled because of:
+        # E203: https://black.readthedocs.io/en/stable/the_black_code_style.html#slices
+        # W503: https://black.readthedocs.io/en/stable/the_black_code_style.html#line-breaks-binary-operators
+        args:
+          [
+              '--max-line-length',
+              '120',
+              '--ignore',
+              'E203, W503',
+          ]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: bash -c 'poetry run mypy .'
+        language: system
+        types: [python]
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: bash -c 'poetry run pylint huma_utils'
+        language: system
+        types: [python]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.2
+    hooks:
+      - id: gitleaks
