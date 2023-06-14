@@ -1,0 +1,37 @@
+name: Huma Utils CI for Merging to Main
+
+on:
+  push:
+    branches: [ "main" ]
+    tag:
+      - "*"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint
+        run: docker-compose -f ./docker-compose-ci.yml run lint-tests
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Unit and e2e tests
+        env:
+          WEB3_PROVIDER_URL: ${{ secrets.WEB3_PROVIDER_URL }}
+        run: docker-compose -f ./docker-compose-ci.yml run tests
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - tests
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.16
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          python_version: "3.10"
