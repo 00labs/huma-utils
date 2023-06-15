@@ -33,12 +33,6 @@ types-factory-boy = "^0.4.1"
 vcrpy = "^4.3.1"
 factory-boy = "^3.2.1"
 
-
-[[tool.poetry.source]]
-name = "eaverse"
-url = "https://github.com/00labs/eaverse"
-priority = "explicit"
-
 [tool.pytest.ini_options]
 describe_prefixes = ["describe", "if", "when", "with", "without"]
 pythonfunctions = ["it", "its_"]
