@@ -26,6 +26,7 @@ my_vcr.register_matcher(name="alchemy_url", matcher=_match_alchemy_url)
 @contextlib.contextmanager
 def use_cassette(fixture_file_path: str, **kwargs: Any) -> Iterator:
     with my_vcr.use_cassette(
+        # gets rid of VCR_FIXTURES_DIRECTORY
         fixture_file_path,
         # The `test` host is where the test server is running in e2e tests.
         # We want the test to make actual requests to the test server, hence
