@@ -9,12 +9,11 @@ from vcr import cassette, request
 def _match_alchemy_url(
     incoming_req: vcr.request.Request, recorded_req: vcr.request.Request
 ) -> bool:
-    # It's an unfortunate fact that Alchemy puts the API key at the end of the URL directly as
-    # part of the path, so if whoever runs the test uses a different API key then request matching
-    # would fail. So let's not compare the last part of the URL when it's an Alchemy URL.
+    # It's an unfortunate fact that Alchemy embeds the chain and API key in the URL directly as
+    # part of the path, so if whoever runs the test uses a different chain or API key then request matching
+    # would fail. So let's not compare the entire URL when it's an Alchemy URL.
     if "alchemy.com" in incoming_req.host and "alchemy.com" in recorded_req.host:
-        filtered_r1_url = incoming_req.uri[: incoming_req.uri.rfind("/")]
-        return filtered_r1_url == recorded_req.uri
+        return True
 
     return incoming_req.uri == recorded_req.uri
 
