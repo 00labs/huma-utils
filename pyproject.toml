@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "huma-utils"
-version = "0.2.2"
+version = "0.3.0"
 description = ""
 authors = ["flowers-huang <flora221@stanford.edu>"]
 readme = "README.md"
