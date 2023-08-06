@@ -1,4 +1,4 @@
-ARG PY_VERSION=3.10
+ARG PY_VERSION=3.11
 FROM python:${PY_VERSION}-slim-bullseye AS base
 
 ENV LANG "C.UTF-8"
@@ -13,10 +13,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     git \
     ; rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/app/evaluation_agent/
+WORKDIR /usr/app/huma-utils/
 COPY ./ ./
 
-RUN pip install poetry==1.2.2
+RUN pip install poetry
 
 # Build target for CI and local development
 FROM base AS dev
