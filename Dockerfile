@@ -13,7 +13,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     git \
     ; rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/app/evaluation_agent/
+WORKDIR /usr/app/huma-utils/
 COPY ./ ./
 
 RUN pip install poetry
