@@ -1,7 +1,8 @@
 import re
 from typing import Any
 
-_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
+_CAMEL_CASE_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
+_PASCAL_CASE_PATTERN = re.compile(r"(?<=[a-z0-9])([A-Z])")
 
 
 def snake_to_camel(name: str, overrides: dict[str, str] | None = None) -> str:
@@ -26,7 +27,19 @@ def camel_to_snake(s: str) -> str:
     """
     Converts `s` from camel case to snake case.
     """
-    return _PATTERN.sub("_", s).lower()
+    return _CAMEL_CASE_PATTERN.sub("_", s).lower()
+
+
+def split_pascal_case(s: str) -> str:
+    """
+    Splits strings in pascal case into a sentence.
+
+    Examples:
+
+    assert split_pascal_case("FooBar") == "Foo bar"
+    assert split_pascal_case("Foo") == "Foo"
+    """
+    return _PASCAL_CASE_PATTERN.sub(r" \1", s)
 
 
 def convert_dict_keys_to_snake_case(d: dict[str, Any]) -> dict[str, Any]:

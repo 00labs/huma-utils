@@ -39,6 +39,21 @@ def describe_camel_to_snake() -> None:
         assert string_utils.camel_to_snake(input_) == expected
 
 
+def describe_split_pascal_case() -> None:
+    @pytest.mark.parametrize(
+        "input_, expected",
+        [
+            ("", ""),
+            ("Foo", "Foo"),
+            ("FooBar", "Foo bar"),
+            ("FooBarBaz", "Foo bar baz"),
+            ("Foobarbaz", "Foobarbaz"),
+        ],
+    )
+    def it_splits_pascal_case_into_a_sentence(input_: str, expected: str) -> None:
+        assert string_utils.split_pascal_case(input_) == expected
+
+
 def convert_dict_keys_to_snake_case() -> None:
     @pytest.mark.parametrize(
         "input_, expected",
