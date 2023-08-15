@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "huma-utils"
-version = "0.6.0"
+version = "0.7.0"
 description = "Huma Python utilities library"
 authors = ["Flora Huang <flora@huma.finance>", "Jiatu Liu <jiatu@huma.finance>"]
 readme = "README.md"
@@ -12,6 +12,9 @@ httpx = "^0.24.1"
 orjson = "^3.9.1"
 pydantic = "^1.10.9"
 web3 = "^6.4.0"
+fastapi = "^0.101.1"
+cryptography = "^41.0.3"
+pyjwt = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.2"
@@ -31,6 +34,7 @@ pytest-cov = "^4.1.0"
 types-factory-boy = "^0.4.1"
 vcrpy = "^4.3.1"
 factory-boy = "^3.2.1"
+pycryptodome = "^3.18.0"
 
 [tool.pytest.ini_options]
 describe_prefixes = ["describe", "if", "when", "with", "without"]
