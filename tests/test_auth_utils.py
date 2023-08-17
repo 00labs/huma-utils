@@ -23,10 +23,6 @@ def describe_verify_wallet_ownership() -> None:
         return "1"
 
     @pytest.fixture
-    def claim_sub(wallet_address: str, chain_id: str) -> str:
-        return f"{wallet_address}:{chain_id}"
-
-    @pytest.fixture
     def token_expiration_time() -> datetime.datetime:
         return datetime_utils.tz_aware_utc_now() + datetime.timedelta(days=3)
 
@@ -36,21 +32,18 @@ def describe_verify_wallet_ownership() -> None:
 
     @pytest.fixture
     def id_token(
-        claim_sub: str,
+        wallet_address: str,
+        chain_id: str,
         token_expiration_time: datetime.datetime,
         token_issuer: str,
         rsa_key: RSA.RsaKey,
     ) -> str:
-        claim = auth_utils.JWTClaim(
-            sub=claim_sub,
-            exp=token_expiration_time,
-            iat=datetime_utils.tz_aware_utc_now(),
-            iss=token_issuer,
-        )
-        return jwt.encode(
-            payload=claim.dict(),
-            key=rsa_key.export_key(),
-            algorithm="RS256",
+        return auth_utils.create_auth_token(
+            wallet_address=wallet_address,
+            chain_id=chain_id,
+            expires_at=token_expiration_time,
+            jwt_private_key=rsa_key.export_key().decode(),
+            issuer=token_issuer,
         )
 
     @pytest.fixture
@@ -108,16 +101,12 @@ def describe_verify_wallet_ownership() -> None:
             rsa_key: RSA.RsaKey,
         ) -> str:
             header, _, sig = id_token.split(".")
-            claim = auth_utils.JWTClaim(
-                sub=f"{wallet_address}:2",
-                exp=token_expiration_time,
-                iat=datetime_utils.tz_aware_utc_now(),
-                iss=token_issuer,
-            )
-            new_token = jwt.encode(
-                payload=claim.dict(),
-                key=rsa_key.export_key(),
-                algorithm="RS256",
+            new_token = auth_utils.create_auth_token(
+                wallet_address=wallet_address,
+                chain_id="2",
+                expires_at=token_expiration_time,
+                jwt_private_key=rsa_key.export_key().decode(),
+                issuer=token_issuer,
             )
             _, new_token_payload, _ = new_token.split(".")
             # Replaces the claim with an invalid one to simulate the jwt being tampered with.
@@ -140,13 +129,14 @@ def describe_verify_wallet_ownership() -> None:
     def if_the_claim_is_malformed() -> None:
         @pytest.fixture
         def id_token(
-            claim_sub: str,
+            wallet_address: str,
+            chain_id: str,
             token_expiration_time: datetime.datetime,
             rsa_key: RSA.RsaKey,
         ) -> str:
             return jwt.encode(
                 payload={
-                    "sub": claim_sub,
+                    "sub": f"{wallet_address}:{chain_id}",
                     "exp": token_expiration_time,
                     "iat": datetime_utils.tz_aware_utc_now(),
                     # Missing iss.
@@ -209,8 +199,8 @@ def describe_verify_wallet_ownership() -> None:
 
     def if_the_subject_is_invalid() -> None:
         @pytest.fixture
-        def claim_sub() -> str:
-            return "abcde"
+        def wallet_address() -> str:
+            return "abcde:123"
 
         def it_throws_error(
             request_with_cookie: fastapi.Request,
