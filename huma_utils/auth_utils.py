@@ -45,7 +45,7 @@ class WalletMismatchException(WalletVerificationException):
 
 def create_auth_token(
     wallet_address: str,
-    chain_id: str,
+    chain_id: str | int,
     expires_at: datetime.datetime,
     jwt_private_key: str,
     issuer: str = constants.HUMA_FINANCE_DOMAIN_NAME,
@@ -64,7 +64,10 @@ def create_auth_token(
 
 
 def verify_wallet_ownership(
-    request: fastapi.Request, jwt_public_key: str, wallet_address: str, chain_id: str
+    request: fastapi.Request,
+    jwt_public_key: str,
+    wallet_address: str,
+    chain_id: str | int,
 ) -> None:
     id_token = request.cookies.get("id_token")
     if not id_token:
@@ -85,5 +88,5 @@ def verify_wallet_ownership(
     sub_parts = jwt_claim.sub.split(":")
     if len(sub_parts) != 2:
         raise InvalidIdTokenException()
-    if wallet_address != sub_parts[0] or chain_id != sub_parts[1]:
+    if wallet_address != sub_parts[0] or str(chain_id) != sub_parts[1]:
         raise WalletMismatchException()
