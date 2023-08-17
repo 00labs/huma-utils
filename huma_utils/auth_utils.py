@@ -4,7 +4,7 @@ import fastapi
 import jwt
 import pydantic
 
-from huma_utils import constants
+from huma_utils import constants, datetime_utils
 
 
 class JWTClaim(pydantic.BaseModel):
@@ -41,6 +41,26 @@ class WalletMismatchException(WalletVerificationException):
         super().__init__(
             message="The wallet address and/or chain ID does not match the ones in the ID token"
         )
+
+
+def create_auth_token(
+    wallet_address: str,
+    chain_id: str,
+    expires_at: datetime.datetime,
+    jwt_private_key: str,
+    issuer: str = constants.HUMA_FINANCE_DOMAIN_NAME,
+) -> str:
+    jwt_claim = JWTClaim(
+        sub=f"{wallet_address}:{chain_id}",
+        exp=expires_at,
+        iat=datetime_utils.tz_aware_utc_now(),
+        iss=issuer,
+    )
+    return jwt.encode(
+        payload=jwt_claim.dict(),
+        key=jwt_private_key,
+        algorithm="RS256",
+    )
 
 
 def verify_wallet_ownership(
