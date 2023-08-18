@@ -4,13 +4,13 @@ import enum
 
 
 class Chain(enum.StrEnum):
-    ETHEREUM = enum.auto()
-    GOERLI = enum.auto()
-    SEPOLIA = enum.auto()
-    POLYGON = enum.auto()
-    MUMBAI = enum.auto()
-    CELO = enum.auto()
-    ALFAJORES = enum.auto()
+    ETHEREUM = "ETHEREUM"
+    GOERLI = "GOERLI"
+    SEPOLIA = "SEPOLIA"
+    POLYGON = "POLYGON"
+    MUMBAI = "MUMBAI"
+    CELO = "CELO"
+    ALFAJORES = "ALFAJORES"
 
     def chain_name(self) -> str:
         return self.lower()
