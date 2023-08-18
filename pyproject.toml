@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "huma-utils"
-version = "0.8.1"
+version = "0.8.2"
 description = "Huma Python utilities library"
 authors = ["Flora Huang <flora@huma.finance>", "Jiatu Liu <jiatu@huma.finance>"]
 readme = "README.md"
@@ -38,7 +38,6 @@ pycryptodome = "^3.18.0"
 
 [tool.pytest.ini_options]
 describe_prefixes = ["describe", "if", "when", "with", "without"]
-pythonfunctions = ["it", "its_"]
 asyncio_mode = "auto"
 
 [tool.isort]
