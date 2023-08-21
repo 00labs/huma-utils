@@ -12,6 +12,7 @@ async def post_request(
     endpoint: str,
     data: dict[str, Any] | str,
     additional_headers: dict[str, str] | None = None,
+    cookies: dict[str, str] | None = None,
 ) -> httpx.Response:
     content: str | bytes = data if isinstance(data, str) else orjson.dumps(data)
     headers = {
@@ -24,4 +25,5 @@ async def post_request(
             url=endpoint,
             headers=headers,
             content=content,
+            cookies=cookies,
         )
