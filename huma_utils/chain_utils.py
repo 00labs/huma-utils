@@ -17,7 +17,6 @@ class UnsupportedChainException(Exception):
 
 class Chain(enum.StrEnum):
     ETHEREUM = "ETHEREUM"
-    GOERLI = "GOERLI"
     SEPOLIA = "SEPOLIA"
     POLYGON = "POLYGON"
     MUMBAI = "MUMBAI"
@@ -28,12 +27,11 @@ class Chain(enum.StrEnum):
         return self.lower()
 
     def is_testnet(self) -> bool:
-        return self.chain_name() in ("goerli", "sepolia", "mumbai", "alfajores")
+        return self.chain_name() in ("sepolia", "mumbai", "alfajores")
 
 
 CHAIN_ID_BY_NAME = {
     Chain.ETHEREUM: 1,
-    Chain.GOERLI: 5,
     Chain.SEPOLIA: 11155111,
     Chain.POLYGON: 137,
     Chain.MUMBAI: 80001,

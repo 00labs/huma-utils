@@ -14,10 +14,10 @@ def describe_Chain() -> None:
         assert chain_utils.Chain.ETHEREUM.chain_name() == "ethereum"
         assert chain_utils.Chain.ETHEREUM.is_testnet() is False
 
-    def it_supports_goerli() -> None:
-        assert chain_utils.Chain.GOERLI == chain_utils.Chain("GOERLI")
-        assert chain_utils.Chain.GOERLI.chain_name() == "goerli"
-        assert chain_utils.Chain.GOERLI.is_testnet() is True
+    def it_supports_sepolia() -> None:
+        assert chain_utils.Chain.SEPOLIA == chain_utils.Chain("SEPOLIA")
+        assert chain_utils.Chain.SEPOLIA.chain_name() == "sepolia"
+        assert chain_utils.Chain.SEPOLIA.is_testnet() is True
 
     def it_does_not_support_unregistered_chains() -> None:
         with pytest.raises(ValueError):
