@@ -19,5 +19,5 @@ services:
     image: huma-utils-ci:latest
     command: ["make", "test"]
     environment:
-      - CHAIN=SEPOLIA
+      - CHAIN=sepolia
       - WEB3_PROVIDER_URL
