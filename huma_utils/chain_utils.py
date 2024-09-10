@@ -16,18 +16,28 @@ class UnsupportedChainException(Exception):
 
 
 class Chain(enum.StrEnum):
-    ETHEREUM = "ETHEREUM"
-    SEPOLIA = "SEPOLIA"
-    POLYGON = "POLYGON"
-    MUMBAI = "MUMBAI"
-    CELO = "CELO"
-    ALFAJORES = "ALFAJORES"
-
-    def chain_name(self) -> str:
-        return self.lower()
+    ETHEREUM = enum.auto()
+    SEPOLIA = enum.auto()
+    POLYGON = enum.auto()
+    MUMBAI = enum.auto()
+    CELO = enum.auto()
+    ALFAJORES = enum.auto()
+    BASE = enum.auto()
+    BASE_SEPOLIA = enum.auto()
+    SOLANA = enum.auto()
+    SOLANA_DEVNET = enum.auto()
+    STELLAR = enum.auto()
+    STELLAR_TESTNET = enum.auto()
 
     def is_testnet(self) -> bool:
-        return self.chain_name() in ("sepolia", "mumbai", "alfajores")
+        return self in (  # type: ignore[comparison-overlap]
+            self.SEPOLIA,
+            self.MUMBAI,
+            self.ALFAJORES,
+            self.BASE_SEPOLIA,
+            self.SOLANA_DEVNET,
+            self.STELLAR_TESTNET,
+        )
 
 
 CHAIN_ID_BY_NAME = {
@@ -37,6 +47,12 @@ CHAIN_ID_BY_NAME = {
     Chain.MUMBAI: 80001,
     Chain.CELO: 42220,
     Chain.ALFAJORES: 44787,
+    Chain.BASE: 8453,
+    Chain.BASE_SEPOLIA: 84532,
+    Chain.SOLANA: 900,
+    Chain.SOLANA_DEVNET: 901,
+    Chain.STELLAR: 1500,
+    Chain.STELLAR_TESTNET: 1501,
 }
 
 CHAIN_NAME_BY_ID = {v: k for k, v in CHAIN_ID_BY_NAME.items()}
