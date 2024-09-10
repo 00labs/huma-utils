@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "huma-utils"
-version = "0.9.3"
+version = "0.10.0"
 description = "Huma Python utilities library"
 authors = ["Flora Huang <flora@huma.finance>", "Jiatu Liu <jiatu@huma.finance>"]
 readme = "README.md"
