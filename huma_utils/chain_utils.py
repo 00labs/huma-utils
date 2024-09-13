@@ -22,6 +22,8 @@ class Chain(enum.StrEnum):
     MUMBAI = enum.auto()
     CELO = enum.auto()
     ALFAJORES = enum.auto()
+    SCROLL = enum.auto()
+    SCROLL_SEPOLIA = enum.auto()
     BASE = enum.auto()
     BASE_SEPOLIA = enum.auto()
     SOLANA = enum.auto()
@@ -34,6 +36,7 @@ class Chain(enum.StrEnum):
             self.SEPOLIA,
             self.MUMBAI,
             self.ALFAJORES,
+            self.SCROLL_SEPOLIA,
             self.BASE_SEPOLIA,
             self.SOLANA_DEVNET,
             self.STELLAR_TESTNET,
@@ -47,6 +50,8 @@ CHAIN_ID_BY_NAME = {
     Chain.MUMBAI: 80001,
     Chain.CELO: 42220,
     Chain.ALFAJORES: 44787,
+    Chain.SCROLL: 534352,
+    Chain.SCROLL_SEPOLIA: 534351,
     Chain.BASE: 8453,
     Chain.BASE_SEPOLIA: 84532,
     Chain.SOLANA: 900,
