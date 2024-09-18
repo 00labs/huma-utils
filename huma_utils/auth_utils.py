@@ -69,7 +69,10 @@ def verify_wallet_ownership(
     wallet_address: str,
     chain_id: str | int,
 ) -> None:
-    id_token = request.cookies.get("id_token")
+    # TODO(jiatu): remove the second `get` after we migrated all services to use the new id_token key.
+    id_token = request.cookies.get(
+        f"id_token:{wallet_address}:{chain_id}"
+    ) or request.cookies.get("id_token")
     if not id_token:
         raise IdTokenNotFoundException()
 
