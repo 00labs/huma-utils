@@ -47,8 +47,8 @@ def describe_verify_wallet_ownership() -> None:
         )
 
     @pytest.fixture
-    def id_token_cookie(id_token: str) -> str:
-        return f"id_token={id_token}"
+    def id_token_cookie(id_token: str, wallet_address: str, chain_id: str) -> str:
+        return f"id_token:{wallet_address}:{chain_id}={id_token}"
 
     @pytest.fixture
     def request_with_cookie(id_token_cookie: str) -> fastapi.Request:
@@ -71,6 +71,24 @@ def describe_verify_wallet_ownership() -> None:
             wallet_address=wallet_address,
             chain_id=chain_id,
         )
+
+    def with_old_style_cookies() -> None:
+        @pytest.fixture
+        def id_token_cookie(id_token: str) -> str:
+            return f"id_token={id_token}"
+
+        def it_performs_the_verification(
+            request_with_cookie: fastapi.Request,
+            wallet_address: str,
+            chain_id: str,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            auth_utils.verify_wallet_ownership(
+                request=request_with_cookie,
+                jwt_public_key=rsa_key.public_key().export_key().decode(),
+                wallet_address=wallet_address,
+                chain_id=chain_id,
+            )
 
     def if_the_cookie_is_missing() -> None:
         @pytest.fixture
