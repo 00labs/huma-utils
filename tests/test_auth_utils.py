@@ -237,12 +237,18 @@ def describe_verify_wallet_ownership() -> None:
     def if_the_wallet_address_mismatches() -> None:
         def if_the_wallet_address_mismatches_with_the_one_in_the_token() -> None:
             @pytest.fixture
-            def wallet_address() -> str:
+            def wallet_address_2() -> str:
                 return address_helpers.fake_hex_address()
+
+            @pytest.fixture
+            def id_token_cookie(
+                id_token: str, wallet_address_2: str, chain_id: str
+            ) -> str:
+                return f"id_token:{wallet_address_2}:{chain_id}={id_token}"
 
             def it_throws_error(
                 request_with_cookie: fastapi.Request,
-                wallet_address: str,
+                wallet_address_2: str,
                 chain_id: str,
                 rsa_key: RSA.RsaKey,
             ) -> None:
@@ -250,7 +256,7 @@ def describe_verify_wallet_ownership() -> None:
                     auth_utils.verify_wallet_ownership(
                         request=request_with_cookie,
                         jwt_public_key=rsa_key.public_key().export_key().decode(),
-                        wallet_address=wallet_address,
+                        wallet_address=wallet_address_2,
                         chain_id=chain_id,
                     )
 
@@ -272,21 +278,27 @@ def describe_verify_wallet_ownership() -> None:
     def if_the_chain_id_mismatches() -> None:
         def if_the_chain_id_mismatches_with_the_one_in_the_token() -> None:
             @pytest.fixture
-            def chain_id() -> str:
+            def chain_id_2() -> str:
                 return "2"
+
+            @pytest.fixture
+            def id_token_cookie(
+                id_token: str, wallet_address: str, chain_id_2: str
+            ) -> str:
+                return f"id_token:{wallet_address}:{chain_id_2}={id_token}"
 
             def it_throws_error(
                 request_with_cookie: fastapi.Request,
                 wallet_address: str,
                 rsa_key: RSA.RsaKey,
-                chain_id: str,
+                chain_id_2: str,
             ) -> None:
                 with pytest.raises(auth_utils.WalletMismatchException):
                     auth_utils.verify_wallet_ownership(
                         request=request_with_cookie,
                         jwt_public_key=rsa_key.public_key().export_key().decode(),
                         wallet_address=wallet_address,
-                        chain_id=chain_id,
+                        chain_id=chain_id_2,
                     )
 
         def if_the_chain_id_mismatches_with_the_one_in_the_cookie_key() -> None:
