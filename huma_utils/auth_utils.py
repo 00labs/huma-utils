@@ -63,7 +63,7 @@ class AccountTokenNotFoundException(AccountVerificationException):
 
 class InvalidAccountTokenException(AccountVerificationException):
     def __init__(self) -> None:
-        super().__init__(message="Invalid Account token")
+        super().__init__(message="Invalid account token")
 
 
 def create_auth_token(
