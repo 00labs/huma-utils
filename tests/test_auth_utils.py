@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 import fastapi
 import jwt
@@ -72,24 +73,6 @@ def describe_verify_wallet_ownership() -> None:
             chain_id=chain_id,
         )
 
-    def with_old_style_cookies() -> None:
-        @pytest.fixture
-        def id_token_cookie(id_token: str) -> str:
-            return f"id_token={id_token}"
-
-        def it_performs_the_verification(
-            request_with_cookie: fastapi.Request,
-            wallet_address: str,
-            chain_id: str,
-            rsa_key: RSA.RsaKey,
-        ) -> None:
-            auth_utils.verify_wallet_ownership(
-                request=request_with_cookie,
-                jwt_public_key=rsa_key.public_key().export_key().decode(),
-                wallet_address=wallet_address,
-                chain_id=chain_id,
-            )
-
     def if_the_cookie_is_missing() -> None:
         @pytest.fixture
         def id_token_cookie(id_token: str) -> str:
@@ -113,6 +96,7 @@ def describe_verify_wallet_ownership() -> None:
         @pytest.fixture
         def id_token_cookie(
             wallet_address: str,
+            chain_id: str,
             id_token: str,
             token_expiration_time: datetime.datetime,
             token_issuer: str,
@@ -128,7 +112,7 @@ def describe_verify_wallet_ownership() -> None:
             )
             _, new_token_payload, _ = new_token.split(".")
             # Replaces the claim with an invalid one to simulate the jwt being tampered with.
-            return f"id_token={'.'.join([header, new_token_payload, sig])}"
+            return f"id_token:{wallet_address}:{chain_id}={'.'.join([header, new_token_payload, sig])}"
 
         def it_throws_error(
             request_with_cookie: fastapi.Request,
@@ -314,3 +298,177 @@ def describe_verify_wallet_ownership() -> None:
                         wallet_address=wallet_address,
                         chain_id="2",
                     )
+
+
+def describe_verify_account_token() -> None:
+    @pytest.fixture(scope="session")
+    def rsa_key() -> RSA.RsaKey:
+        return RSA.generate(2048)
+
+    @pytest.fixture
+    def account_id() -> uuid.UUID:
+        return uuid.uuid4()
+
+    @pytest.fixture
+    def token_expiration_time() -> datetime.datetime:
+        return datetime_utils.tz_aware_utc_now() + datetime.timedelta(days=3)
+
+    @pytest.fixture
+    def token_issuer() -> str:
+        return constants.HUMA_FINANCE_DOMAIN_NAME
+
+    @pytest.fixture
+    def account_token(
+        account_id: uuid.UUID,
+        token_expiration_time: datetime.datetime,
+        token_issuer: str,
+        rsa_key: RSA.RsaKey,
+    ) -> str:
+        return auth_utils.create_account_token(
+            account_id=account_id,
+            expires_at=token_expiration_time,
+            jwt_private_key=rsa_key.export_key().decode(),
+            issuer=token_issuer,
+        )
+
+    @pytest.fixture
+    def account_token_cookie(account_token: str) -> str:
+        return f"account_token={account_token}"
+
+    @pytest.fixture
+    def request_with_cookie(account_token_cookie: str) -> fastapi.Request:
+        return fastapi.Request(
+            scope={
+                "type": "http",
+                "headers": [("cookie".encode(), account_token_cookie.encode())],
+            }
+        )
+
+    def it_performs_the_verification(
+        account_id: uuid.UUID,
+        request_with_cookie: fastapi.Request,
+        rsa_key: RSA.RsaKey,
+    ) -> None:
+        actual_account_id = auth_utils.verify_account_token(
+            request=request_with_cookie,
+            jwt_public_key=rsa_key.public_key().export_key().decode(),
+        )
+        assert actual_account_id == account_id
+
+    def if_the_cookie_is_missing() -> None:
+        @pytest.fixture
+        def account_token_cookie() -> str:
+            return ""
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.AccountTokenNotFoundException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
+
+    def if_the_jwt_is_tampered_with() -> None:
+        @pytest.fixture
+        def account_token_cookie(
+            account_id: uuid.UUID,
+            account_token: str,
+            token_expiration_time: datetime.datetime,
+            token_issuer: str,
+            rsa_key: RSA.RsaKey,
+        ) -> str:
+            header, _, sig = account_token.split(".")
+            new_token = auth_utils.create_account_token(
+                account_id=uuid.uuid4(),
+                expires_at=token_expiration_time,
+                jwt_private_key=rsa_key.export_key().decode(),
+                issuer=token_issuer,
+            )
+            _, new_token_payload, _ = new_token.split(".")
+            # Replaces the claim with an invalid one to simulate the jwt being tampered with.
+            return f"account_token={'.'.join([header, new_token_payload, sig])}"
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.InvalidAccountTokenException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
+
+    def if_the_claim_is_malformed() -> None:
+        @pytest.fixture
+        def account_token(
+            account_id: uuid.UUID,
+            token_expiration_time: datetime.datetime,
+            rsa_key: RSA.RsaKey,
+        ) -> str:
+            return jwt.encode(
+                payload={
+                    "sub": str(account_id),
+                    "exp": token_expiration_time,
+                    "iat": datetime_utils.tz_aware_utc_now(),
+                    # Missing iss.
+                },
+                key=rsa_key.export_key(),
+                algorithm="RS256",
+            )
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.InvalidAccountTokenException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
+
+    def if_the_token_has_expired() -> None:
+        @pytest.fixture
+        def token_expiration_time() -> datetime.datetime:
+            return datetime_utils.tz_aware_utc_now() - datetime.timedelta(seconds=3)
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.InvalidAccountTokenException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
+
+    def if_the_token_issuer_is_not_huma() -> None:
+        @pytest.fixture
+        def token_issuer() -> str:
+            return "not-huma.finance"
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.InvalidAccountTokenException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
+
+    def if_the_subject_is_not_a_valid_uuid() -> None:
+        @pytest.fixture
+        def account_id() -> str:
+            return "abcde"
+
+        def it_throws_error(
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+        ) -> None:
+            with pytest.raises(auth_utils.InvalidAccountTokenException):
+                auth_utils.verify_account_token(
+                    request=request_with_cookie,
+                    jwt_public_key=rsa_key.public_key().export_key().decode(),
+                )
