@@ -13,7 +13,6 @@ def describe_SERVER_ALLOW_ORIGIN_REGEX() -> None:
             "https://master.d382yqc38xh8lk.amplifyapp.com",
             "https://dev.app.huma.finance",
             "https://app.huma.finance",
-            "https://v2.app.huma.finance",
             "https://local.bulla.network:1234",
             "https://dev.bulla.network",
             "https://banker.bulla.network",
