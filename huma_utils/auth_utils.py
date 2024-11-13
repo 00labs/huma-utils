@@ -92,7 +92,9 @@ def verify_wallet_ownership(
     wallet_address: str,
     chain_id: str | int,
 ) -> None:
-    id_token = request.cookies.get(f"id_token:{wallet_address}:{chain_id}")
+    id_token = request.cookies.get(
+        f"{constants.WALLET_TOKEN_KEY_PREFIX}:{wallet_address}:{chain_id}"
+    )
     if not id_token:
         raise IdTokenNotFoundException()
 
@@ -138,7 +140,7 @@ def verify_account_token(
     request: fastapi.Request,
     jwt_public_key: str,
 ) -> uuid.UUID:
-    account_token = request.cookies.get("account_token")
+    account_token = request.cookies.get(constants.ACCOUNT_TOKEN_KEY)
     if not account_token:
         raise AccountTokenNotFoundException()
 
