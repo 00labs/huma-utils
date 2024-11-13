@@ -12,6 +12,8 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://testnet\.campaign-points\.huma\.finance"
     r"|https://dev\.mainnet\.campaign-points\.huma\.finance"
     r"|https://testnet\.campaign-points\.huma\.finance"
+    r"|https://devnet\.solapp\.huma\.finance"
+    r"|https://dev\.devnet\.solapp\.huma\.finance"
     r"|https://local\.bulla\.network:1234"
     r"|https://dev\.bulla\.network"
     r"|https://banker\.bulla\.network"
