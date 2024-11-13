@@ -17,3 +17,6 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://banker\.bulla\.network"
     r"|http://localhost:\d+$"
 )
+
+WALLET_TOKEN_KEY_PREFIX = "id_token"
+ACCOUNT_TOKEN_KEY = "account_token"

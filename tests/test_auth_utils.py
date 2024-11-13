@@ -49,7 +49,7 @@ def describe_verify_wallet_ownership() -> None:
 
     @pytest.fixture
     def id_token_cookie(id_token: str, wallet_address: str, chain_id: str) -> str:
-        return f"id_token:{wallet_address}:{chain_id}={id_token}"
+        return f"{constants.WALLET_TOKEN_KEY_PREFIX}:{wallet_address}:{chain_id}={id_token}"
 
     @pytest.fixture
     def request_with_cookie(id_token_cookie: str) -> fastapi.Request:
@@ -112,7 +112,10 @@ def describe_verify_wallet_ownership() -> None:
             )
             _, new_token_payload, _ = new_token.split(".")
             # Replaces the claim with an invalid one to simulate the jwt being tampered with.
-            return f"id_token:{wallet_address}:{chain_id}={'.'.join([header, new_token_payload, sig])}"
+            return (
+                f"{constants.WALLET_TOKEN_KEY_PREFIX}:{wallet_address}:{chain_id}"
+                f"={'.'.join([header, new_token_payload, sig])}"
+            )
 
         def it_throws_error(
             request_with_cookie: fastapi.Request,
@@ -228,7 +231,7 @@ def describe_verify_wallet_ownership() -> None:
             def id_token_cookie(
                 id_token: str, wallet_address_2: str, chain_id: str
             ) -> str:
-                return f"id_token:{wallet_address_2}:{chain_id}={id_token}"
+                return f"{constants.WALLET_TOKEN_KEY_PREFIX}:{wallet_address_2}:{chain_id}={id_token}"
 
             def it_throws_error(
                 request_with_cookie: fastapi.Request,
@@ -269,7 +272,7 @@ def describe_verify_wallet_ownership() -> None:
             def id_token_cookie(
                 id_token: str, wallet_address: str, chain_id_2: str
             ) -> str:
-                return f"id_token:{wallet_address}:{chain_id_2}={id_token}"
+                return f"{constants.WALLET_TOKEN_KEY_PREFIX}:{wallet_address}:{chain_id_2}={id_token}"
 
             def it_throws_error(
                 request_with_cookie: fastapi.Request,
@@ -333,7 +336,7 @@ def describe_verify_account_token() -> None:
 
     @pytest.fixture
     def account_token_cookie(account_token: str) -> str:
-        return f"account_token={account_token}"
+        return f"{constants.ACCOUNT_TOKEN_KEY}={account_token}"
 
     @pytest.fixture
     def request_with_cookie(account_token_cookie: str) -> fastapi.Request:
@@ -388,7 +391,7 @@ def describe_verify_account_token() -> None:
             )
             _, new_token_payload, _ = new_token.split(".")
             # Replaces the claim with an invalid one to simulate the jwt being tampered with.
-            return f"account_token={'.'.join([header, new_token_payload, sig])}"
+            return f"{constants.ACCOUNT_TOKEN_KEY}={'.'.join([header, new_token_payload, sig])}"
 
         def it_throws_error(
             request_with_cookie: fastapi.Request,
