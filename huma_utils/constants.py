@@ -4,6 +4,7 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://master\.d382yqc38xh8lk\.amplifyapp\.com"
     r"|https://dev\.app\.huma\.finance"
     r"|https://dev\.testnet\.app\.huma\.finance"
+    r"|https://dev\.testnet\.huma\.finance"
     r"|https://testnet\.app\.huma\.finance"
     r"|https://testnet-campaigns\.app\.huma\.finance"
     r"|https://campaigns\.app\.huma\.finance"
