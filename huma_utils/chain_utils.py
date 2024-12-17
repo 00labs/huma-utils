@@ -32,18 +32,7 @@ class Chain(enum.StrEnum):
     STELLAR_TESTNET = enum.auto()
 
     def is_evm_compatible(self) -> bool:
-        return self in (  # type: ignore[comparison-overlap]
-            self.ETHEREUM,
-            self.SEPOLIA,
-            self.POLYGON,
-            self.MUMBAI,
-            self.CELO,
-            self.ALFAJORES,
-            self.SCROLL,
-            self.SCROLL_SEPOLIA,
-            self.BASE,
-            self.BASE_SEPOLIA,
-        )
+        return self in EVM_COMPATIBLE_CHAINS
 
     def is_testnet(self) -> bool:
         return self in (  # type: ignore[comparison-overlap]
@@ -55,6 +44,20 @@ class Chain(enum.StrEnum):
             self.SOLANA_DEVNET,
             self.STELLAR_TESTNET,
         )
+
+
+EVM_COMPATIBLE_CHAINS = [
+    Chain.ETHEREUM,
+    Chain.SEPOLIA,
+    Chain.POLYGON,
+    Chain.MUMBAI,
+    Chain.CELO,
+    Chain.ALFAJORES,
+    Chain.SCROLL,
+    Chain.SCROLL_SEPOLIA,
+    Chain.BASE,
+    Chain.BASE_SEPOLIA,
+]
 
 
 CHAIN_ID_BY_NAME = {
