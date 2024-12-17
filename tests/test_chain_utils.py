@@ -16,6 +16,14 @@ def describe_Chain() -> None:
         with pytest.raises(ValueError):
             assert chain_utils.Chain("some_chain") is None
 
+    def it_checks_evm_compatibility() -> None:
+        assert chain_utils.Chain.ETHEREUM.is_evm_compatible() is True
+        assert chain_utils.Chain.SOLANA.is_evm_compatible() is False
+
+    def it_checks_whether_a_chain_is_testnet() -> None:
+        assert chain_utils.Chain.SOLANA_DEVNET.is_testnet() is True
+        assert chain_utils.Chain.ETHEREUM.is_testnet() is False
+
 
 def describe_CHAIN_ID_BY_NAME() -> None:
     def it_contains_the_id_for_all_chains() -> None:
