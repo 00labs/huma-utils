@@ -18,7 +18,8 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://local\.bulla\.network:1234"
     r"|https://dev\.bulla\.network"
     r"|https://banker\.bulla\.network"
-    r"|http://localhost:\d+$"
+    # Safe wallets require https even for localhost.
+    r"|https?://localhost:\d+$"
 )
 
 WALLET_TOKEN_KEY_PREFIX = "id_token"
