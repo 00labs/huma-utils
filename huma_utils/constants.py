@@ -2,6 +2,8 @@ HUMA_FINANCE_DOMAIN_NAME = "huma.finance"
 SERVER_ALLOW_ORIGIN_REGEX = (
     r"^https://pr-\d+\.d382yqc38xh8lk\.amplifyapp\.com"
     r"|https://master\.d382yqc38xh8lk\.amplifyapp\.com"
+    r"|https://admin-testnet\.d3916bhqsqthjl\.amplifyapp\.com"
+    r"|https://admin-develop\.d3916bhqsqthjl\.amplifyapp\.com"
     r"|https://dev\.app\.huma\.finance"
     r"|https://dev\.testnet\.app\.huma\.finance"
     r"|https://dev\.testnet\.huma\.finance"
