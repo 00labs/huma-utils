@@ -358,6 +358,39 @@ def describe_verify_account_token() -> None:
         )
         assert actual_account_id == account_id
 
+    def with_a_non_default_account_token_cookie_key() -> None:
+        @pytest.fixture
+        def account_token_cookie_key() -> str:
+            return "account_token_permissioned"
+
+        @pytest.fixture
+        def account_token_cookie(
+            account_token: str, account_token_cookie_key: str
+        ) -> str:
+            return f"{account_token_cookie_key}={account_token}"
+
+        @pytest.fixture
+        def request_with_cookie(account_token_cookie: str) -> fastapi.Request:
+            return fastapi.Request(
+                scope={
+                    "type": "http",
+                    "headers": [("cookie".encode(), account_token_cookie.encode())],
+                }
+            )
+
+        def it_performs_the_verification(
+            account_id: uuid.UUID,
+            request_with_cookie: fastapi.Request,
+            rsa_key: RSA.RsaKey,
+            account_token_cookie_key: str,
+        ) -> None:
+            actual_account_id = auth_utils.verify_account_token(
+                request=request_with_cookie,
+                jwt_public_key=rsa_key.public_key().export_key().decode(),
+                account_token_key=account_token_cookie_key,
+            )
+            assert actual_account_id == account_id
+
     def if_the_cookie_is_missing() -> None:
         @pytest.fixture
         def account_token_cookie() -> str:

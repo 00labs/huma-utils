@@ -139,8 +139,9 @@ def create_account_token(
 def verify_account_token(
     request: fastapi.Request,
     jwt_public_key: str,
+    account_token_key: str = constants.ACCOUNT_TOKEN_KEY,
 ) -> uuid.UUID:
-    account_token = request.cookies.get(constants.ACCOUNT_TOKEN_KEY)
+    account_token = request.cookies.get(account_token_key)
     if not account_token:
         raise AccountTokenNotFoundException()
 
