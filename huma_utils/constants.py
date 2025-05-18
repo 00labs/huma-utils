@@ -28,6 +28,9 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://local\.bulla\.network:1234"
     r"|https://dev\.bulla\.network"
     r"|https://banker\.bulla\.network"
+    r"|https://dev-testnet\.claim\.huma\.finance"
+    r"|https://dev\.claim\.huma\.finance"
+    r"|https://claim\.huma\.finance"
     # Safe wallets require https even for localhost.
     r"|https?://localhost:\d+$"
 )
