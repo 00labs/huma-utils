@@ -31,6 +31,8 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://dev-testnet\.claim\.huma\.finance"
     r"|https://dev\.claim\.huma\.finance"
     r"|https://claim\.huma\.finance"
+    r"|https://dev\.presale\.huma\.finance"
+    r"|https://presale\.huma\.finance"
     # Safe wallets require https even for localhost.
     r"|https?://localhost:\d+$"
 )
