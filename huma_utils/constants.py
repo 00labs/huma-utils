@@ -13,6 +13,7 @@ SERVER_ALLOW_ORIGIN_REGEX = (
     r"|https://institutional\.huma\.finance"
     r"|https://inst\.huma\.finance"
     r"|https://dev\.app\.huma\.finance"
+    r"|https://dev-testnet\.app\.huma\.finance"
     r"|https://dev\.testnet\.app\.huma\.finance"
     r"|https://dev\.testnet\.huma\.finance"
     r"|https://testnet\.app\.huma\.finance"
